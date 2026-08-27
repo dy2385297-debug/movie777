@@ -61,3 +61,4 @@ if __name__ == "__main__":
     # Start Telegram bot main process
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
+
