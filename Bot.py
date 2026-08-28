@@ -39,9 +39,12 @@ async def process_movie_links(message: Message):
     text = message.text
     if text and text.startswith(("http://", "https://")):
         try:
-            api_url = f"https://tinyurl.com/api-create.php?url={text}"
-            res = requests.get(api_url)
-            clean_link = res.text if res.status_code == 200 else text
+            import urllib.parse
+            # बाहिरबाट आएको लिङ्कलाई इन्कोड गर्ने
+            encoded_url = urllib.parse.quote(text, safe='')
+            
+            # तपाईंले भन्नुभएको जस्तै movize7cr.blogspot.com वाला नयाँ सुरक्षित लिङ्क बनाउने
+            clean_link = f"https://movize7cr.blogspot.com/?link={encoded_url}"
         except Exception:
             clean_link = text
 
@@ -66,4 +69,3 @@ if __name__ == "__main__":
     # Start Telegram bot main process
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
-
