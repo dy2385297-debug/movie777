@@ -29,8 +29,8 @@ dp = Dispatcher()
 @dp.message(Command("start"))
 async def start_handler(message: Message):
     await message.answer(
-        "🎬 *Movie Bot is Online!*\n\n"
-        "Send me any movie or video link, and I will generate a secured link for you!",
+        "🎬 *Movie Safe Link Bot is Online!*\n\n"
+        "Send me any movie direct download link, and I will generate a secure clean link for your blog!",
         parse_mode="Markdown"
     )
 
@@ -40,22 +40,23 @@ async def process_movie_links(message: Message):
     if text and text.startswith(("http://", "https://")):
         try:
             import urllib.parse
-            # बाहिरबाट आएको लिङ्कलाई इन्कोड गर्ने
+            # बाहिरबाट आएको ठूलो/जोखिमपूर्ण लिङ्कलाई पूर्ण रूपमा इन्कोड गर्ने
             encoded_url = urllib.parse.quote(text, safe='')
 
-            # तपाईंको ब्लगको नामसहितको सुरक्षित लिङ्क जेनेरेट गर्ने
-            clean_link = f"https://movize7cr.blogspot.com/?link={encoded_url}"
+            # ब्लगलाई अनपब्लिश हुनबाट बचाउन र सुरक्षित राख्न क्लिन रिडाइरेक्ट लिङ्क बनाउने
+            # (तपाईंले यहाँ चाहेको ट्र्याकिङ वा रिडाइरेक्ट स्ट्रक्चर प्रयोग गर्न सक्नुहुन्छ)
+            clean_link = f"https://my-redirect-safe.blogspot.com/p/download.html?url={encoded_url}"
         except Exception:
             clean_link = text
 
         response_msg = (
-            f"🔗 *NepalFlix Secure Link Generated!*\n\n"
-            f"📌 *Generated Link:*\n`{clean_link}`\n\n"
-            f"👉 यो लिङ्क आफ्नो वेबसाइटको Download बटनमा राख्नुहोस्!"
+            f"🛡️ *Safe Download Link Generated!*\n\n"
+            f"📌 *Copy this link for your blog:*\n`{clean_link}`\n\n"
+            f"👉 यो लिङ्कले ब्लगलाई अनपब्लिश हुनबाट बचाउँछ र युजरले क्लिक गर्दा सजिलै डाउनलोड हुन्छ!"
         )
         await message.answer(response_msg, parse_mode="Markdown")
     else:
-        await message.answer("⚠️ कृपया http:// वा https:// बाट सुरु हुने सही मुभी लिङ्क पठाउनुहोस् है दाइ!")
+        await message.answer("⚠️ कृपया http:// वा https:// बाट सुरु हुने सही लिङ्क पठाउनुहोस् है दाइ!")
 
 async def main():
     bot = Bot(token=TOKEN)
