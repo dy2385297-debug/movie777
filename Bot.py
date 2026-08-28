@@ -38,11 +38,16 @@ async def start_handler(message: Message):
 async def process_movie_links(message: Message):
     text = message.text
     if text and text.startswith(("http://", "https://")):
-        clean_link = text
-        
+        try:
+            api_url = f"https://tinyurl.com/api-create.php?url={text}"
+            res = requests.get(api_url)
+            clean_link = res.text if res.status_code == 200 else text
+        except Exception:
+            clean_link = text
+
         response_msg = (
-            f"✅ *Link Processed Successfully!*\n\n"
-            f"🔗 *Generated Link:*\n`{clean_link}`"
+            f"🔗 *Link Processed Successfully!*\n\n"
+            f"📌 *Generated Clean Link:*\n`{clean_link}`"
         )
         await message.answer(response_msg, parse_mode="Markdown")
     else:
