@@ -42,19 +42,20 @@ async def process_movie_links(message: Message):
             import urllib.parse
             # बाहिरबाट आएको लिङ्कलाई इन्कोड गर्ने
             encoded_url = urllib.parse.quote(text, safe='')
-            
-            # तपाईंले भन्नुभएको जस्तै movize7cr.blogspot.com वाला नयाँ सुरक्षित लिङ्क बनाउने
+
+            # तपाईंको ब्लगको नामसहितको सुरक्षित लिङ्क जेनेरेट गर्ने
             clean_link = f"https://movize7cr.blogspot.com/?link={encoded_url}"
         except Exception:
             clean_link = text
 
         response_msg = (
-            f"🔗 *Link Processed Successfully!*\n\n"
-            f"📌 *Generated Clean Link:*\n`{clean_link}`"
+            f"🔗 *NepalFlix Secure Link Generated!*\n\n"
+            f"📌 *Generated Link:*\n`{clean_link}`\n\n"
+            f"👉 यो लिङ्क आफ्नो वेबसाइटको Download बटनमा राख्नुहोस्!"
         )
         await message.answer(response_msg, parse_mode="Markdown")
     else:
-        await message.answer("⚠️ Please send a valid movie link starting with http:// or https://")
+        await message.answer("⚠️ कृपया http:// वा https:// बाट सुरु हुने सही मुभी लिङ्क पठाउनुहोस् है दाइ!")
 
 async def main():
     bot = Bot(token=TOKEN)
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     # Start background web server for Render port check
     server_thread = threading.Thread(target=start_web_server, daemon=True)
     server_thread.start()
-    
+
     # Start Telegram bot main process
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
