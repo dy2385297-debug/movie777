@@ -29,8 +29,8 @@ dp = Dispatcher()
 @dp.message(Command("start"))
 async def start_handler(message: Message):
     await message.answer(
-        "🎬 *Direct Download Bot is Online!*\n\n"
-        "Send me any movie link, and I will convert it into a 1-Click Direct Download link!",
+        "🎬 *Auto-Download Bot is Online!*\n\n"
+        "Send me any movie link, and I will generate your secure blog download link!",
         parse_mode="Markdown"
     )
 
@@ -38,19 +38,24 @@ async def start_handler(message: Message):
 async def process_movie_links(message: Message):
     text = message.text
     if text and text.startswith(("http://", "https://")):
-        # बाहिरबाट आएको लिङ्कलाई कतै नघुमाई सिधै डाउनलोड हुने बनाउने ट्रिक
-        # यदि लिङ्कमा पहिल्यै ? वा & छ भने त्यसरी नै जोड्ने, नभए ?download=1 थप्ने
-        separator = "&" if "?" in text else "?"
-        direct_download_link = f"{text}{separator}download=1"
+        try:
+            import urllib.parse
+            # बाहिरबाट आएको असली लिङ्कलाई इन्कोड गर्ने
+            encoded_url = urllib.parse.quote(text, safe='')
+
+            # तपाईंको ब्लगको डोमेन र डाउनलोड पेजको लिङ्क बनाउने
+            clean_link = f"https://movize7cr.blogspot.com/p/download.html?url={encoded_url}"
+        except Exception:
+            clean_link = text
 
         response_msg = (
-            f"⚡ *1-Click Direct Download Link Generated!*\n\n"
-            f"📌 *Copy this link:*\n`{direct_download_link}`\n\n"
-            f"👉 यो लिङ्कमा क्लिक गर्नेबित्तिकै युजरको मोबाइल वा ल्यापटपमा सिधै डाउनलोड सुरु हुन्छ!"
+            f"🔗 *Secure Blog Download Link Generated!*\n\n"
+            f"📌 *Copy this link:*\n`{clean_link}`\n\n"
+            f"👉 यो लिङ्क आफ्नो ब्लग वा पोस्टमा राख्नुहोस्!"
         )
         await message.answer(response_msg, parse_mode="Markdown")
     else:
-        await message.answer("⚠️ कृपया http:// वा https:// बाट सुरु हुने सही लिङ्क पठाउनुहोस् है दाइ!")
+        await message.answer("⚠️ कृपया http:// वा https:// बाट सुरु हुने सही मुभी लिङ्क पठाउनुहोस् है दाइ!")
 
 async def main():
     bot = Bot(token=TOKEN)
