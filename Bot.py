@@ -63,8 +63,11 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    
+    # 1. Start Flask web server in a background thread for Render port 10000
     server_thread = threading.Thread(target=start_web_server, daemon=True)
     server_thread.start()
-
-    logging.basicConfig(level=logging.INFO)
+    
+    # 2. Run Telegram bot polling
     asyncio.run(main())
