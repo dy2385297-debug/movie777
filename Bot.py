@@ -29,8 +29,8 @@ dp = Dispatcher()
 @dp.message(Command("start"))
 async def start_handler(message: Message):
     await message.answer(
-        "🎬 *Movie Safe Link Bot is Online!*\n\n"
-        "Send me any movie direct download link, and I will generate a secure clean link for your blog!",
+        "🎬 *Direct Download Bot is Online!*\n\n"
+        "Send me any movie link, and I will convert it into a 1-Click Direct Download link!",
         parse_mode="Markdown"
     )
 
@@ -38,21 +38,15 @@ async def start_handler(message: Message):
 async def process_movie_links(message: Message):
     text = message.text
     if text and text.startswith(("http://", "https://")):
-        try:
-            import urllib.parse
-            # बाहिरबाट आएको ठूलो/जोखिमपूर्ण लिङ्कलाई पूर्ण रूपमा इन्कोड गर्ने
-            encoded_url = urllib.parse.quote(text, safe='')
-
-            # ब्लगलाई अनपब्लिश हुनबाट बचाउन र सुरक्षित राख्न क्लिन रिडाइरेक्ट लिङ्क बनाउने
-            # (तपाईंले यहाँ चाहेको ट्र्याकिङ वा रिडाइरेक्ट स्ट्रक्चर प्रयोग गर्न सक्नुहुन्छ)
-            clean_link = f"https://my-redirect-safe.blogspot.com/p/download.html?url={encoded_url}"
-        except Exception:
-            clean_link = text
+        # बाहिरबाट आएको लिङ्कलाई कतै नघुमाई सिधै डाउनलोड हुने बनाउने ट्रिक
+        # यदि लिङ्कमा पहिल्यै ? वा & छ भने त्यसरी नै जोड्ने, नभए ?download=1 थप्ने
+        separator = "&" if "?" in text else "?"
+        direct_download_link = f"{text}{separator}download=1"
 
         response_msg = (
-            f"🛡️ *Safe Download Link Generated!*\n\n"
-            f"📌 *Copy this link for your blog:*\n`{clean_link}`\n\n"
-            f"👉 यो लिङ्कले ब्लगलाई अनपब्लिश हुनबाट बचाउँछ र युजरले क्लिक गर्दा सजिलै डाउनलोड हुन्छ!"
+            f"⚡ *1-Click Direct Download Link Generated!*\n\n"
+            f"📌 *Copy this link:*\n`{direct_download_link}`\n\n"
+            f"👉 यो लिङ्कमा क्लिक गर्नेबित्तिकै युजरको मोबाइल वा ल्यापटपमा सिधै डाउनलोड सुरु हुन्छ!"
         )
         await message.answer(response_msg, parse_mode="Markdown")
     else:
@@ -64,10 +58,8 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    # Start background web server for Render port check
     server_thread = threading.Thread(target=start_web_server, daemon=True)
     server_thread.start()
 
-    # Start Telegram bot main process
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
